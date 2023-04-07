@@ -1,1 +1,0 @@
-# mapt-report-generator
