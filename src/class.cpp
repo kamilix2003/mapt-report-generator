@@ -51,9 +51,10 @@ std::string Exercise::extract_extention()
     return path_.substr(dot_position + 1, path_.back());
 }
 
-void Exercise::append_to_report(std::ofstream* output)
+void Exercise::append_to_report(std::ofstream* output, Config* config)
 {
-    *output << "## ex " << exercise_number_ << "\n```" << this->extention_ << "\n";
+    *output << "## "<< config->ex_msg << " " 
+        << exercise_number_ << "\n```" << this->extention_ << "\n";
     for(std::string line : lines_)
     {
         *output << line << "\n";

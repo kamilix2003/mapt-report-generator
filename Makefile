@@ -6,5 +6,5 @@ O_FILES := *.o
 
 comp:
 	g++ -c ${SRC_FILES}
-	g++  ${O_FILES} -o ${TMP_DIR}/Run.out
+	g++  ${O_FILES} -o ${TMP_DIR}/Run.exe
 	rm ${O_FILES}
