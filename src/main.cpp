@@ -47,6 +47,16 @@ std::vector<std::string> handle_arguments(int argc, char** argv, Config* config)
             config->ex_msg = argument;
             continue;
         }
+        if(current_flag == "-s") // SIGNATURE
+        {
+            config->signature = argument;
+            continue;
+        }
+        if(current_flag == "-r") // REPO
+        {
+            config->repo = argument;
+            continue;
+        }
         std::cout<<"INVALID FLAG!\n";
         std::abort();
     }
@@ -84,11 +94,14 @@ std::ofstream generate_report(std::vector<std::string> exercise_list
     std::ofstream report(config->report_name+"_"+std::to_string(config->lab_number)+".md");
     report << "# "<< config->lab_msg << " " 
         << ((config->lab_number == -1) ? "" : std::to_string(config->lab_number)) << "\n";
+    if(config->signature.length() > 0){ report << config->signature << "\n\n"; }
+    if(config->repo.length() > 0){ report << "[SOURCE](" << config->repo << ")\n"; }
     for(std::string exercise : exercise_list)
     {
         Exercise lab(int(exercise[exercise.find(".")-1] - '0'), exercise);
         lab.append_to_report(&report, config);
     }
+    report << "<center> generated with <a href=\"https://github.com/kamilix2003/report-baker\">Report baker</a> </center>";
     return report;
 }
 
