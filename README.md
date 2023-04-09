@@ -5,9 +5,15 @@
 - g++ installed
 
 ## How to bake your report
-all files have to be in the current directory
-```shell
-./reportbaker -f [source_files] -l [lab_number] -lm [lab_msg] -em [ex_msg]
+
+```bash
+./tmp/Run.exe -h
+
+    -h display this message
+    -d directory with source files default: current directory
+    -f files to add to the report default: *.cpp *.py files in the diractory
+    -l lab number default: none
+    -a autor
+    -r link to repo with source code
 ```
-when no files given program will use all files with `.cpp` and `.py` extentions in the current directory. 
-default `lab_msg = Laboratory`, `ex_msg = Exercise`
+last character of file name is exercise number

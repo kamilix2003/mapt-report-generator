@@ -1,10 +1,11 @@
 #include "../include/class.h"
 
-Exercise::Exercise(int exercise_number, std::string path)
+Exercise::Exercise(int exercise_number, std::string path, std::string dir)
 {
     path_ = path;
+    dir_ = dir;
     exercise_number_ = exercise_number;
-    std::ifstream file("./"+path_);
+    std::ifstream file(dir_+path_);
     extention_ = this->extract_extention();
     std::string line;
     if(!file.is_open()){ return; }
@@ -24,15 +25,15 @@ std::vector<std::string> Exercise::compile()
     std::vector<std::string> output;
     std::string line;
     if(this->extention_ == "cpp"){
-        std::string command = "g++ ./" + path_ + " -o ex";
+        std::string command = "g++ "+ dir_ + path_ + " -o ex";
         std::string run = "./ex > temp.txt";
         std::system(command.c_str());
         std::system(run.c_str());
-        std::system("rm ex");
+        std::system("rm ./ex");
     }
     if(this->extention_ == "py")
     {
-        std::string commnad = "python3 " + path_ +" > temp.txt";
+        std::string commnad = "python3 "+ dir_ + path_ +" > temp.txt";
         std::system(commnad.c_str());
     }
     std::ifstream program_output("./temp.txt");

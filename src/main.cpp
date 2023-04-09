@@ -1,10 +1,19 @@
 #include "../include/class.h"
 
-std::vector<std::string> add_all_files()
+const std::string HELP = 
+"\n"
+"\t-h display this message\n"
+"\t-d directory with source files default: current directory\n"
+"\t-f files to add to the report default: *.cpp *.py files in the diractory\n"
+"\t-l lab number default: none\n"
+"\t-a autor\n"
+"\t-r link to repo with source code\n";
+
+std::vector<std::string> add_all_files(Config* config)
 {
     std::vector<std::string> output_vec;
     std::string line;
-    std::system("ls > temp.txt");
+    std::system(("ls "+config->dir+" > temp.txt").c_str());
     std::ifstream temp("temp.txt");
     std::string extention;
     while(std::getline(temp, line))
@@ -25,7 +34,16 @@ std::vector<std::string> handle_arguments(int argc, char** argv, Config* config)
     for(int i = 1; i < argc; *argv++, i++)
     {
         argument = *argv;
-        if(argument[0] == '-'){ current_flag = argument; continue;}
+        if(argument[0] == '-')
+        {
+            current_flag = argument;
+            if(current_flag == "-h") // HELP
+            {
+                std::cout<<HELP;
+                std::exit(EXIT_SUCCESS);
+            }
+            continue;
+        }
         if(current_flag == "-f") // SOURCE FILES
         {
             all_files = false;
@@ -37,19 +55,9 @@ std::vector<std::string> handle_arguments(int argc, char** argv, Config* config)
             config->lab_number = std::stoi(argument);
             continue;
         }
-        if(current_flag == "-lm") // #h1 MSG
+        if(current_flag == "-a") // SIGNATURE
         {
-            config->lab_msg = argument;
-            continue;
-        }
-        if(current_flag == "-em") // #h2 MSG
-        {
-            config->ex_msg = argument;
-            continue;
-        }
-        if(current_flag == "-s") // SIGNATURE
-        {
-            config->signature = argument;
+            config->author = argument;
             continue;
         }
         if(current_flag == "-r") // REPO
@@ -57,10 +65,15 @@ std::vector<std::string> handle_arguments(int argc, char** argv, Config* config)
             config->repo = argument;
             continue;
         }
+        if(current_flag == "-d")
+        {
+            config->dir = argument;
+            continue;
+        }
         std::cout<<"INVALID FLAG!\n";
-        std::abort();
+        std::exit(EXIT_FAILURE);
     }
-    if(all_files){ output_vec = add_all_files(); }
+    if(all_files){ output_vec = add_all_files(config); }
     return output_vec;
 }
 
@@ -94,11 +107,11 @@ std::ofstream generate_report(std::vector<std::string> exercise_list
     std::ofstream report(config->report_name+"_"+std::to_string(config->lab_number)+".md");
     report << "# "<< config->lab_msg << " " 
         << ((config->lab_number == -1) ? "" : std::to_string(config->lab_number)) << "\n";
-    if(config->signature.length() > 0){ report << config->signature << "\n\n"; }
+    if(config->author.length() > 0){ report << config->author << "\n\n"; }
     if(config->repo.length() > 0){ report << "[SOURCE](" << config->repo << ")\n"; }
     for(std::string exercise : exercise_list)
     {
-        Exercise lab(int(exercise[exercise.find(".")-1] - '0'), exercise);
+        Exercise lab(int(exercise[exercise.find(".")-1] - '0'), exercise, config->dir);
         lab.append_to_report(&report, config);
     }
     report << "<center> generated with <a href=\"https://github.com/kamilix2003/report-baker\">Report baker</a> </center>";
@@ -108,7 +121,7 @@ std::ofstream generate_report(std::vector<std::string> exercise_list
 int main(int argc, char** argv)
 {
     Config Report_config;
-    if(!verify_requiered_software()) {std::cout<<"missing software!\n"; return 0; }
+    if(!verify_requiered_software() && Report_config.bypass_software_check) {std::cout<<"missing software!\n"; return 0; }
     std::vector<std::string> exercise_list = handle_arguments(argc, argv, &Report_config);
     generate_report(exercise_list, &Report_config);
     std::cout<<"freshly baked report!\n";
