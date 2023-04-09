@@ -6,8 +6,8 @@
 
 ## How to bake your report
 
-```bash
-./tmp/Run.exe -h
+```
+./reportbaker.exe -h
 
     -h display this message
     -d directory with source files default: current directory
