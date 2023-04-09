@@ -17,3 +17,4 @@
     -r link to repo with source code
 ```
 last character of file name is exercise number
+example: `lab41.cpp` => 1
