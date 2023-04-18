@@ -10,6 +10,7 @@
 ./tmp/Run.exe -h
 
     -h display this message
+    -o output file name
     -d directory with source files default: current directory
     -f files to add to the report default: *.cpp *.py files in the diractory
     -l lab number default: none

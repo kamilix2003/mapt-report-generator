@@ -44,6 +44,11 @@ std::vector<std::string> handle_arguments(int argc, char** argv, Config* config)
             }
             continue;
         }
+        if(current_flag == "-o") // OUTPUT FILE NAME
+        {
+            config->report_name = argument;
+            continue;
+        }
         if(current_flag == "-f") // SOURCE FILES
         {
             all_files = false;
@@ -67,6 +72,7 @@ std::vector<std::string> handle_arguments(int argc, char** argv, Config* config)
         }
         if(current_flag == "-d")
         {
+            if(argument.back() != '/'){ argument.append("/"); }
             config->dir = argument;
             continue;
         }
@@ -104,7 +110,7 @@ void print_vector(std::vector<T> v)
 std::ofstream generate_report(std::vector<std::string> exercise_list
     ,Config* config)
 {
-    std::ofstream report(config->report_name+"_"+std::to_string(config->lab_number)+".md");
+    std::ofstream report(config->report_name+((config->lab_number == -1) ? "" : ("_" + std::to_string(config->lab_number)))+".md");
     report << "# "<< config->lab_msg << " " 
         << ((config->lab_number == -1) ? "" : std::to_string(config->lab_number)) << "\n";
     if(config->author.length() > 0){ report << config->author << "\n\n"; }
